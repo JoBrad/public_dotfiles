@@ -1,0 +1,1 @@
+export GOPATH=/opt/homebrew/bin

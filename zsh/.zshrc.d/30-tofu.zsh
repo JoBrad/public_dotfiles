@@ -1,19 +1,14 @@
 #!/bin/zsh
-
 ########################
-# Terraform config
+# OpenTofu config
 ########################
-# Enable terraform autocomplete
-complete -o nospace -C /usr/local/bin/terraform terraform
-
-# Set Terraform log file
+# Logging
 export TF_LOG_PATH="${HOME}/.terraform/logs/terraform.log"
-# Set Terraform log level
 # Options: TRACE, DEBUG, INFO, WARN, ERROR
-export TF_LOG='WARN'
+export TF_LOG='ERROR'
 
 # Set Terraform cache dir
-export TF_PLUGIN_CACHE_DIR="${HOME}/.local/share/terraform_plugin_cache"
+export TF_PLUGIN_CACHE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/tf_plugin_cache"
 
 ########################
 # Terraform prompt configuration
@@ -31,20 +26,34 @@ RPROMPT='$(tf_prompt_info)'
 
 
 ########################
+# cf-terraforming aliases
+########################
+# alias cfgen='cf-terraforming generate --modern-import-block --provider-registry-hostname registry.opentofu.org  --terraform-binary-path=/opt/homebrew/bin/tofu'
+
+
+########################
 # Terraform aliases
 ########################
+function use_tofu {
+  echo "Setting 'tf' alias to tofu."
+  alias tf='tofu'
+}
 
-alias tf='terraform'
+function use_terraform {
+  echo "😤 Setting 'tf' alias to tofu."
+  alias tf='terraform'
+}
+
+# alias tf='terraform'
+alias tf='tofu'
 
 alias tfi='tf init'
-
-alias tfp='tf plan'
-alias tfa='tf apply'
-# alias tfd='tf destroy'
-
 alias tfip='tfi && tfp'
 alias tfia='tfi && tfa'
-# alias tfid='tfi && tfd'
+alias tfp='tf plan'
+alias tfa='tf apply'
+
+alias tffmt='tf fmt'
 
 alias tfc='tf console'
 alias tfg='tf graph'
@@ -55,9 +64,13 @@ alias tfprov='tf providers'
 alias tfpp='tf push'
 alias tfr='tf refresh'
 alias tfs='tf show'
+alias tfv='tf validate'
+
 alias tfst='tf state'
+alias tfls='tf state list'
+alias tfmv='tf state mv'
 alias tft='tf taint'
 alias tfunt='tf untaint'
-alias tfv='tf validate'
-alias tfver='tf version'
+
 alias tfw='tf workspace'
+alias tfws='tf workspace select'

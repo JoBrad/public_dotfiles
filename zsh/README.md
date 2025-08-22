@@ -20,19 +20,18 @@ export GIT_REPO_HOME="${HOME}/git"
 ########################
 export ZSHRCD="${HOME}/.zshrc.d"
 
-() {
-  # make sure we found the zshrc.d
-  if [[ -s "${ZSHRCD}" && -d "${ZSHRCD}" ]]; then
-    # source all files in zshrc.d
-    local conf_files=("$ZSHRCD"/*.{sh,zsh}(N))
-    local f
-    for f in ${(o)conf_files}; do
-      # ignore files that begin with a tilde
-      case ${f:t} in '~'*) continue;; esac
-      source "${f}"
-    done
-  fi
-}
+# Cache completions for 24 hours
+if [[ -n ${HOME}/.zcompdump(#qN.mh+24) ]]; then
+  compinit -C   # Right: skip checks when cache exists
+else
+  compinit      # Right: full init when no cache
+fi
+
+if [[ -d "$ZSHRCD" ]]; then
+  for f in "$ZSHRCD"/*.{sh,zsh}(N); do
+    [[ ${f:t} != ~* ]] && source "$f"
+  done
+fi
 
 ```
 
