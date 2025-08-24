@@ -1,7 +1,10 @@
 #!/bin/zsh
+
+# Only load if tool is present
+_gitcmd="$(command -v git)" || return
+
 export GIT_REPO_HOME="${HOME}/git"
 
-_gitcmd="$(command -v git)"
 
 if [[ -s "${_gitcmd}" ]];
 then

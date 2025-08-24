@@ -1,10 +1,10 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 ########################
 # Docker-specific setup
 ########################
 
 # Only load if tool is present
-_clicmd="$(command -v docker)" || return
+command -v docker >/dev/null 2>&1 || return
 
 alias dcup='docker-compose up -d'
 alias dcdown='docker-compose down'

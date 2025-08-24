@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 ########################
 # OpenTofu config
 ########################
@@ -16,38 +16,32 @@ export TF_PLUGIN_CACHE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/tf_plugin_cac
 ########################
 # Terraform prompt configuration
 ########################
-function tf_prompt_info() {
-  # S show 'default' workspace in home dir
+tf_prompt_info() {
+  # Don't show 'default' workspace in home dir
   [[ "$PWD" != ~ ]] || return
   # check if in terraform dir and file exists
   [[ -d .terraform && -r .terraform/environment ]] || return
 
   local workspace="$(< .terraform/environment)"
-  echo "${ZSH_THEME_TF_PROMPT_PREFIX-[}${workspace:gs/%/%%}${ZSH_THEME_TF_PROMPT_SUFFIX-]}"
+  echo "[${workspace}]"
 }
-RPROMPT='$(tf_prompt_info)'
 
-
-########################
-# cf-terraforming aliases
-########################
-# alias cfgen='cf-terraforming generate --modern-import-block --provider-registry-hostname registry.opentofu.org  --terraform-binary-path=/opt/homebrew/bin/tofu'
-
+# Add to PROMPT_COMMAND for bash
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }PS1=\"\$PS1\$(tf_prompt_info) \""
 
 ########################
 # Terraform aliases
 ########################
-function use_tofu {
+use_tofu() {
   echo "Setting 'tf' alias to tofu."
   alias tf='tofu'
 }
 
-function use_terraform {
-  echo "😤 Setting 'tf' alias to tofu."
+use_terraform() {
+  echo "😤 Setting 'tf' alias to terraform."
   alias tf='terraform'
 }
 
-# alias tf='terraform'
 alias tf='tofu'
 
 alias tfi='tf init'

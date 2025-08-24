@@ -8,27 +8,30 @@ are loaded by bash.
 To load these files on login, add this snippet to your .bash_aliases or .bashrc file:
 
 ```
-
 ########################
-# Set Git repo root folder
+# Cache completions for 24 hours
 ########################
-export GIT_REPO_HOME="${HOME}/git"
+_comp_cache="${HOME}/.bash_completion_cache"
+if [[ -f "$_comp_cache" && $(find "$_comp_cache" -mtime -1 2>/dev/null) ]]; then
+  source "$_comp_cache"
+else
+  # Rebuild completion cache
+  {
+    complete -p 2>/dev/null
+    # Add any custom completions here
+  } > "$_comp_cache" 2>/dev/null
+fi
 
 ########################
 # Load .bashrc.d folder
 ########################
 export BASHRCD="${HOME}/.bashrc.d"
 
-() {
-  if [[ -s "${BASHRCD}" && -d "${BASHRCD}" ]]; then
-    # shellcheck disable=SC2044
-    for bashfile in $(find "${BASHRCD}" -name "*.sh" -type f)
-    do
-      # shellcheck disable=SC1090
-      source "${bashfile}"
-    done
-  fi
-}
+if [[ -d "$BASHRCD" ]]; then
+  for f in "$BASHRCD"/*.sh; do
+    [[ -f "$f" && ! "${f##*/}" =~ ^~ ]] && source "$f"
+  done
+fi
 
 ```
 

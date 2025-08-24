@@ -39,7 +39,9 @@ else
 fi
 
 # ls aliases
+alias l='ls -CF'
 alias la="ls -A"
+alias lsd='tree -daiL 1'
 # Adds file classification indicators to entries.
 # List of indicators:
 #   / directory

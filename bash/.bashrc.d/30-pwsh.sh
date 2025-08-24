@@ -1,8 +1,8 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 # Only load if tool is present
 command -v pwsh >/dev/null 2>&1 || return
 
-function upgradepwsh() {
+upgradepwsh() {
   brew upgrade powershell
   pwsh -Command 'Install-Module -Name PSWSMan -Force'
   sudo pwsh -Command 'Install-WSMan'
