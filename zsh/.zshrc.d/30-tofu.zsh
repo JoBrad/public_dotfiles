@@ -1,7 +1,9 @@
-#!/bin/zsh
-########################
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
 # OpenTofu config
-########################
+#+++++++++++++++++++++++++++++++++++++
+
 # Only load if tool is present
 command -v tofu >/dev/null 2>&1 || return
 

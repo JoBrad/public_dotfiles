@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 cmd="brew install coreutils findutils gnu-tar gnu-sed gawk gnutls gnu-indent gnu-getopt grep"
 

@@ -1,17 +1,22 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
+# Git aliases
+#+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
 _gitcmd="$(command -v git)" || return
 
-export GIT_REPO_HOME="${HOME}/git"
+export GIT_REPO_HOME="${GIT_REPO_HOME:-${HOME}/git}"
 
 
 if [[ -s "${_gitcmd}" ]];
 then
-  if [[ -s "${GIT_REPO_HOME}" && -d "${GIT_REPO_HOME}" ]];
+  if [[ -d "${GIT_REPO_HOME}" ]];
   then
     # shellcheck disable=SC2139
     alias cdgit="cd ${GIT_REPO_HOME}"
+    [[ -d "${GIT_REPO_HOME}/infrastructure/" ]] && alias cdinf="cd ${GIT_REPO_HOME}/infrastructure/"
   fi
 
   function GitCheckoutAndPull() {

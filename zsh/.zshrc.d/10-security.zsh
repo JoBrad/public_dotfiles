@@ -1,4 +1,8 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
+# Updates to enhance security
+#+++++++++++++++++++++++++++++++++++++
 
 # Don't save command history after logoff
 export HISTFILESIZE=0

@@ -1,4 +1,9 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
+# Powershell core
+#+++++++++++++++++++++++++++++++++++++
+
 # Only load if tool is present
 command -v pwsh >/dev/null 2>&1 || return
 
