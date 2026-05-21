@@ -172,9 +172,10 @@ alias awsls="awslistprofile"
 alias awssp="awssetprofile"
 alias awswho="aws sts get-caller-identity"
 
-# compdef _aws_profile_complete awsgetregion awssetprofile awssp
+compdef _aws_profile_complete awsgetregion awssetprofile awssp
 # Add this to the list of pending completions
-_pending_completions+="compdef _aws_profile_complete awsgetregion awssetprofile awssp"$'\n'
+# This doesn't actually get picked up. Need to find out why.
+# _pending_completions+="compdef _aws_profile_complete awsgetregion awssetprofile awssp"$'\n'
 
 #+++++++++++++++++++++++++++++++++++++
 # End Custom AWS Plugin

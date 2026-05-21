@@ -1,15 +1,17 @@
 # Project overview
 
-- This project contains shell script customizations for selected shells.
-- The primary subfolders are named after the shell that they are for.
+- This project contains shell script customizations for selected shells, and (to a much lesser extent) ad hoc scripts that the user executes.
+- The repository structure is designed to neatly fit within a user's `~/.config` folder.
+- The top-level subfolders are named after the shell their content is for.
 - Each of these shell-specific folders contains a readme file in Markdown format that includes instructions on integrating the customizations with the user's shell.
-- The shell-specific folders will also contain a folder named after the shell default rc file, but ending with .d, to indicate it is a drop-in directory. For example, under the `bash` folder there is a `.bashrc.d` folder.
-- Because these scripts will execute on each interactive shell startup, is is vitally important that they are performant and lazy-load when needed. From a performance perspective, the time between shell startup and when a user sees their prompt, and is able to input a command, is the most important measure.
-- If a script encounters an error it should output the error, the location where the error occurred, and then quickly exist without crashing the users's session.
+- The shell-specific folders will also contain a folder named after the shell default rc file, but ending with `.d`, to indicate it is a drop-in directory. For example, under the `bash` folder there is a `.bashrc.d` folder.
+- Because startup scripts will execute on each interactive shell startup, it is vitally important that they are performant and lazy-load when needed. From a performance perspective, the time between shell startup and when a user sees their prompt, and is able to input a command, is the most important measure.
+- Startup scripts must be silent. On failure exit quickly without making further changes or outputting text.
+- Non-startup scripts may write normal stdout output; on failure, emit concise stderr with context (what failed and where), then exit safely.
 - When applicable, these customizations should respect configuration path settings in this order:
   * User-specified XDG-* variables
   * OS-specified variables
-  * OS-specific customs
+  * OS or application-specific conventions
 - These scripts should not be concerned with migrating existing data or handling any backwards compatibility issues.
 
 # General guidelines
@@ -37,17 +39,17 @@
   - Environment variables, input parameters, or configuration files for configuration and secrets
   - Validation of user inputs to avoid high-priority vulnerabilities
 - Suggest tests when being asked about entire code projects or files.
-- For Typescript, consider the following tsconfig configuration as a default:
-  - target: es2022
-  - module: nodenext
-  - moduleResolution: nodenext
-  - erasableSyntaxOnly: true
-  - strict: true
-  - noImplicitAny: true
-  - strictNullChecks: true
-  - noImplicitThis: true
-  - noUnusedLocals: true
-  - noUnusedParameters: true
-  - noImplicitReturns: true
-  - noFallthroughCasesInSwitch: true
-- For shellscript languages, prefer constructs and functions that are highly performant and native.
+
+## Shellscript guide
+- Always add an explicit shebang which respects the user's environment choice (e.g. `#!/usr/bin/env zsh` vs `#!/usr/bin/zsh`)
+- Use lazy loading for expensive operations
+- Avoid side effects whenever possible. Utilize local variables; don't switch paths without switching back to the original path; cleanup temp files, etc. Ensure cleanup operations are run even on abnormal exit.
+- Enforce strict mode patterns. For bash scripts, use safe defaults like nounset and pipefail where compatible; for zsh, utilize equivalent options and local option scoping.
+- Require defensive quoting and glob behavior. Quote variable expansions by default, explicitly handle empty globs, and avoid word-splitting surprises.
+- Do not use unsafe eval patterns, such as eval on dynamic or user-derived input; use safer alternatives or explicit sanitization rules.
+- Perform early checks on dependencies. Fail early, and do not output to stdout/stderr for startup scripts.
+- Prefer GNU tooling, but provide fallback options. Use checks to ensure the correct tool and options are being used.
+- Startup script should be idempotent. Sourcing the same file multiple times should not duplicate PATH entries, hooks, aliases, or prompt state.
+- Prefix project functions and variables to prevent collisions with user config or third-party plugins.
+- Require shellcheck and syntax checks (bash -n or zsh -n) for changed shell files before merge.
+- Wrap prompt/UI features so non-interactive shells (CI, scripts, ssh commands) skip unnecessary initialization.
