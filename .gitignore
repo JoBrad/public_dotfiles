@@ -1,2 +1,16 @@
+*
 .DS_Store
-.amazonq
+Thumbs.db
+
+!/.gitignore
+!/AGENTS.md
+!/LICENSE
+!/README.md
+!/bash/
+!/bash/**
+/bash/**/.DS_Store
+/bash/**/Thumbs.db
+!/zsh/
+!/zsh/**
+/zsh/**/.DS_Store
+/zsh/**/Thumbs.db

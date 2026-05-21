@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
 # Only load if tool is present
 _gitcmd="$(command -v git)" || return

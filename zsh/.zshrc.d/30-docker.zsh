@@ -1,7 +1,8 @@
-#!/bin/zsh
-########################
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
 # Docker-specific setup
-########################
+#+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
 _clicmd="$(command -v docker)" || return

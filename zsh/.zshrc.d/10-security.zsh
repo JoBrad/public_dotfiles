@@ -1,4 +1,8 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
+# Updates to enhance security
+#+++++++++++++++++++++++++++++++++++++
 
 # Don't save command history after logoff
 export HISTFILESIZE=0
@@ -7,4 +11,4 @@ export HISTFILESIZE=0
 echo -en "\033]0;${USER}@${HOSTNAME%%.*}\a"
 
 # Reset window title on logout
-# export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}"; echo -ne "\007"'
+export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME%%.*}"; echo -ne "\007"'

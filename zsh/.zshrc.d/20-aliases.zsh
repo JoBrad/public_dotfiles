@@ -1,4 +1,8 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
+
+#+++++++++++++++++++++++++++++++++++++
+# Generic set of aliases
+#+++++++++++++++++++++++++++++++++++++
 
 # cd aliases
 alias ..='cd ..'
@@ -41,7 +45,7 @@ fi
 # ls aliases
 alias l='ls -CF'
 alias la="ls -A"
-alias lsd='tree -daiL 1'
+command -v tree >/dev/null 2>&1 && alias lsd='tree -daiL 1'
 # Adds file classification indicators to entries.
 # List of indicators:
 #   / directory
