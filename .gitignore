@@ -11,6 +11,7 @@ Thumbs.db
 !/LICENSE
 !/README.md
 !/assets/
+!/assets/**
 !/bash/
 !/bash/**
 /bash/**/.DS_Store

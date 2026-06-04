@@ -1,0 +1,4 @@
+product = "opentofu"
+install = "${HOME}/.local/tfswitch"
+bin = "${HOME}/.local/bin/tofu"
+log-level = "INFO"
