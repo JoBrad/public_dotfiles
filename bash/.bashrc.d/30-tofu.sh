@@ -5,7 +5,7 @@
 #+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
-command -v tofu >/dev/null 2>&1 || return
+command -v tofu > /dev/null 2>&1 || return
 
 # Logging
 export TF_LOG_PATH="${HOME}/.terraform/logs/terraform.log"

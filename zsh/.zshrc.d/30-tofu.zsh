@@ -8,17 +8,12 @@
 _tfbin="$(command -v tofu 2>&1)"
 _tfswitchbin="$(command -v tfswitch 2>&1)"
 
-if [[ "" == "${_tfbin}" && "" != "${_tfswitchbin}" ]];
-then
+[[ "" == "${_tfbin}" && "" == "${_tfswitchbin}" ]] && return
+
+if [[ "" == "${_tfbin}" && "" != "${_tfswitchbin}" ]]; then
   echo "Installing the latest version of tofu."
   tfswitch --latest
-  _tfbin="$(command -v tofu >/dev/null 2>&1)"
-elif [[ "" == "${_tfbin}" && "" == "${_tfswitchbin}" ]];
-then
-  echo "Could not find tofu or tfswitch."
-  echo "_tfbin: ${_tfbin}"
-  echo "_tfswitchbin: ${_tfswitchbin}"
-  return
+  _tfbin="$(command -v tofu > /dev/null 2>&1)"
 fi
 
 # Logging
@@ -43,19 +38,16 @@ function tf_prompt_info() {
 }
 RPROMPT='$(tf_prompt_info)'
 
-
 ########################
 # tfswitch config
 ########################
 function set_tfswitch_config {
   local assets_dir="${${(%):-%x}:A:h}/assets"
   local source_file="${assets_dir}/tfswitch/.tfswitch_tofu.toml"
-  if [[ "$1" == "terraform" ]];
-  then
+  if [[ "$1" == "terraform" ]]; then
     source_file="${${(%):-%x}:A:h}/assets/tfswitch/.tfswitch_terraform.toml"
   fi
-  if [[ -f "${source_file}" ]];
-  then
+  if [[ -f "${source_file}" ]]; then
     [[ -f ~/.tfswitch.toml ]] && rm ~/.tfswitch.toml
     ln -s "${source_file}" "${HOME}/.tfswitch.toml"
   else

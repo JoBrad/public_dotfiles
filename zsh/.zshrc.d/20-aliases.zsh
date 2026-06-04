@@ -23,8 +23,7 @@ else
 fi
 
 # Other GNU utils
-if [[ -n "$_gnu_prefix" ]];
-then
+if [[ -n "$_gnu_prefix" ]]; then
   [[ -x "${_gnu_prefix}ls" ]] && alias ls="${_gnu_prefix}ls --color=auto --group-directories-first --time-style='+%Y-%m-%d %H:%M:%S'"
   [[ -x "${_gnu_prefix}cp" ]] && alias cp="${_gnu_prefix}cp -bv" && alias cpa="${_gnu_prefix}cp -b --preserve=all"
   [[ -x "${_gnu_prefix}mv" ]] && alias mv="${_gnu_prefix}mv -bv"
@@ -45,7 +44,7 @@ fi
 # ls aliases
 alias l='ls -CF'
 alias la="ls -A"
-command -v tree >/dev/null 2>&1 && alias lsd='tree -daiL 1'
+command -v tree > /dev/null 2>&1 && alias lsd='tree -daiL 1'
 # Adds file classification indicators to entries.
 # List of indicators:
 #   / directory
@@ -55,7 +54,6 @@ command -v tree >/dev/null 2>&1 && alias lsd='tree -daiL 1'
 #   | named pipe
 alias ll="ls -hAlF"
 alias lw="ls -A"
-
 
 alias tarc='tar -cavf'
 alias tarx='tar -xavf'

@@ -5,8 +5,7 @@
 #+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
-command -v aws >/dev/null 2>&1 || return
-
+command -v aws > /dev/null 2>&1 || return
 
 __awp_getAWSConfigLocation() {
   #######################################
@@ -30,7 +29,6 @@ __awp_getAWSConfigLocation() {
   echo "${_config_dir}/config"
 }
 
-
 __awp_validate_aws_config() {
   #######################################
   # Validate that the discovered AWS configuration file exists and is readable
@@ -46,24 +44,21 @@ __awp_validate_aws_config() {
   fi
 }
 
-
 __awp_aws_profile_complete() {
   #######################################
   # Completer for functions that accept an AWS profile name.
   #######################################
 
   if [[ -z "$__awp_aws_profiles_cache_policy" ]]; then
-    __awp_aws_profiles_cache_policy=(${(f)"$(awslistprofile 2>/dev/null)"})
+    __awp_aws_profiles_cache_policy=(${(f)"$(awslistprofile 2> /dev/null)"})
   fi
   _describe 'AWS profiles' __awp_aws_profiles_cache_policy
 }
-
 
 __awp_aws_profiles_cache_policy() {
   local config_file="${AWS_CONFIG_FILE}"
   [[ -f "$config_file" && "$config_file" -nt "$1" ]]
 }
-
 
 # shellcheck disable=SC2120
 __awp_awsenvclear() {
@@ -86,7 +81,6 @@ __awp_awsenvclear() {
     unset "$var"
   done
 }
-
 
 # shellcheck disable=SC2120
 awslistprofile() {
@@ -117,7 +111,6 @@ awslistprofile() {
     echo "$profiles"
   fi
 }
-
 
 awsgetregion() {
   local helpmsg="
@@ -161,7 +154,6 @@ awsgetregion() {
 
   echo "$region"
 }
-
 
 awssetprofile() {
   local helpmsg="
@@ -207,7 +199,7 @@ awssetprofile() {
   # Get configured profile region
   # Use provided region if given
   if [[ -z "$region" ]]; then
-    profile_region=$(awsgetregion "$AWS_PROFILE" 2>/dev/null)
+    profile_region=$(awsgetregion "$AWS_PROFILE" 2> /dev/null)
     if [[ -n "$profile_region" ]]; then
       region="$profile_region"
     elif [[ -n "$_cur_aws_region" ]]; then
@@ -219,7 +211,7 @@ awssetprofile() {
   export AWS_REGION="$region"
 
   # Check if logged in, login if needed
-  if ! aws sts get-caller-identity >/dev/null 2>&1; then
+  if ! aws sts get-caller-identity > /dev/null 2>&1; then
     echo "Not logged in to AWS, running 'aws sso login'..."
     if ! aws sso login --profile "$AWS_PROFILE"; then
       echo "Error: AWS SSO login failed" >&2
@@ -231,7 +223,6 @@ awssetprofile() {
   echo "AWS_REGION: $AWS_REGION"
 
 }
-
 
 # shellcheck disable=SC2155
 export AWS_CONFIG_FILE=$(__awp_getAWSConfigLocation)

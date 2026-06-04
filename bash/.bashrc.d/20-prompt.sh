@@ -11,8 +11,7 @@
 # ->
 
 function get_fg_color() {
-  if [[ "reset" == "$1" ]];
-  then
+  if [[ "reset" == "$1" ]]; then
     echo '\e[0m'
   else
     local _color=""
@@ -26,7 +25,7 @@ function get_fg_color() {
         "underline")
           _mod+="2;"
           ;;
-        "light"|"dark")
+        "light" | "dark")
           _color_mod="$1"
           ;;
         "default")
@@ -35,82 +34,66 @@ function get_fg_color() {
         "black")
           _color="30"
           ;;
-        "grey"|"gray")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+        "grey" | "gray")
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="37"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="90"
           fi
           _color_mod=""
           ;;
         "red")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="91"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="31"
           fi
           _color_mod=""
           ;;
         "green")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="92"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="32"
           fi
           _color_mod=""
           ;;
         "yellow")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="93"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="33"
           fi
           _color_mod=""
           ;;
         "blue")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="94"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="34"
           fi
           _color_mod=""
           ;;
         "magenta")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="95"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="35"
           fi
           _color_mod=""
           ;;
         "cyan")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="96"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="36"
           fi
           _color_mod=""
           ;;
         "white")
-          if [[ "light" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" ]]; then
             _color="97"
-          elif [[ "dark" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="37"
           fi
           _color_mod=""
@@ -118,8 +101,7 @@ function get_fg_color() {
       esac
       shift
     done
-    if [[ "" == "${_mod}" ]];
-    then
+    if [[ "" == "${_mod}" ]]; then
       _mod="0;"
     fi
     echo '\e['${_mod}${_color}'m'
@@ -127,8 +109,7 @@ function get_fg_color() {
 }
 
 function get_bg_color() {
-  if [[ "reset" == "$1" ]];
-  then
+  if [[ "reset" == "$1" ]]; then
     echo '\e[0m'
   else
     local _color=""
@@ -136,88 +117,72 @@ function get_bg_color() {
     local _color_mod=""
     while [ -n "$1" ]; do
       case "${1}" in
-        "light"|"dark")
+        "light" | "dark")
           _color_mod="$1"
           ;;
         "black")
           _color="40"
           ;;
-        "grey"|"gray")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+        "grey" | "gray")
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="47"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="100"
           fi
           _color_mod=""
           ;;
         "red")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="101"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="41"
           fi
           _color_mod=""
           ;;
         "green")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="102"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="42"
           fi
           _color_mod=""
           ;;
         "yellow")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="103"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="43"
           fi
           _color_mod=""
           ;;
         "blue")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="104"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="44"
           fi
           _color_mod=""
           ;;
         "magenta")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="105"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="45"
           fi
           _color_mod=""
           ;;
         "cyan")
-          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" || "" == "${_color_mod}" ]]; then
             _color="106"
-          elif [[ "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "dark" == "${_color_mod}" ]]; then
             _color="46"
           fi
           _color_mod=""
           ;;
         "white")
-          if [[ "light" == "${_color_mod}" ]];
-          then
+          if [[ "light" == "${_color_mod}" ]]; then
             _color="47"
-          elif [[ "" == "${_color_mod}" || "dark" == "${_color_mod}" ]];
-          then
+          elif [[ "" == "${_color_mod}" || "dark" == "${_color_mod}" ]]; then
             _color="107"
           fi
           _color_mod=""
@@ -225,8 +190,7 @@ function get_bg_color() {
       esac
       shift
     done
-    if [[ "" == "${_mod}" ]];
-    then
+    if [[ "" == "${_mod}" ]]; then
       _mod="0;"
     fi
     echo '\e['${_mod}${_color}'m'
@@ -246,16 +210,16 @@ function get_info() {
       "delete")
         _info+='\d'
         ;;
-      "form_feed"|"form")
+      "form_feed" | "form")
         _info+='\f'
         ;;
-      "vertical_tab"|"vtab")
+      "vertical_tab" | "vtab")
         _info+='\v'
         ;;
-      "newline"|"lf")
+      "newline" | "lf")
         _info+='\n'
         ;;
-      "carriage_return"|"cr")
+      "carriage_return" | "cr")
         _info+='\r'
         ;;
       # HH = 24-hour format
@@ -275,10 +239,10 @@ function get_info() {
       "date")
         _info+='\d'
         ;;
-      "short_host"|"host")
+      "short_host" | "host")
         _info+='\h'
         ;;
-      "hostname"|"full_hostname"|"full_host"|"fqdn")
+      "hostname" | "full_hostname" | "full_host" | "fqdn")
         _info+='\H'
         ;;
       "terminal")
@@ -305,13 +269,13 @@ function get_info() {
       "user")
         _info+='\u'
         ;;
-      "user_id"|"uid")
+      "user_id" | "uid")
         _info+='\$'
         ;;
-      "dir"|"directory"|"pwd")
+      "dir" | "directory" | "pwd")
         _info+='\w'
         ;;
-      "dirname"|"base_dir")
+      "dirname" | "base_dir")
         _info+='\W'
         ;;
     esac
@@ -321,14 +285,12 @@ function get_info() {
 }
 
 function getUserPromptColor() {
-  if [[ "${LOGNAME}" == "root" ]];
-  then
+  if [[ "${LOGNAME}" == "root" ]]; then
     # Local root user
     eval get_fg_color red
   fi
   # Local normal user
-  if [[ "$TERM" == *"xterm-color"* || "$TERM" == *"-256color" ]];
-  then
+  if [[ "$TERM" == *"xterm-color"* || "$TERM" == *"-256color" ]]; then
     eval get_fg_color light blue
   else
     eval get_fg_color blue
@@ -337,8 +299,7 @@ function getUserPromptColor() {
 
 _usestarship=${USE_STARSHIP:no}
 
-if [[ "yes" != "${_usestarship}" ]];
-then
+if [[ "yes" != "${_usestarship}" ]]; then
   # Custom Prompt
   PS1="$(get_fg_color reset)\\[$(getUserPromptColor)\\]$(get_info user) \\[$(get_fg_color reset)\\][$(get_info pwd)]\n\\[$(get_fg_color reset)\\]-> "
   PS2=" > "
