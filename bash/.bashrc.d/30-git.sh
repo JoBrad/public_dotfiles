@@ -1,4 +1,8 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
+
+#+++++++++++++++++++++++++++++++++++++
+# Git aliases
+#+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
 _gitcmd="$(command -v git)" || return

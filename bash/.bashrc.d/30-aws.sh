@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #+++++++++++++++++++++++++++++++++++++
-# Custom AWS aliases with completer
+# AWS Profile Manager script, and custom aliases
 #+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present

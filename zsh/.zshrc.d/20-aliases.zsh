@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 #+++++++++++++++++++++++++++++++++++++
-# Generic set of aliases
+# Custom aliases for common commands and tools
 #+++++++++++++++++++++++++++++++++++++
 
 # cd aliases

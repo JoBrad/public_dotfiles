@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#+++++++++++++++++++++++++++++++++++++
+# Custom bash prompt configuration
+#+++++++++++++++++++++++++++++++++++++
+
 # Make a 2-line prompt with the format below
 # The username color will change depending on whether
 # the current user is root or not

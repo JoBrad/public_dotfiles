@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-# Only load if tool is present
+
+#+++++++++++++++++++++++++++++++++++++
+# Powershell updater
+#+++++++++++++++++++++++++++++++++++++
+
+# Only load if pwsh and brew are present
 command -v pwsh >/dev/null 2>&1 || return
+command -v brew >/dev/null 2>&1 || return
 
 upgradepwsh() {
   brew upgrade powershell
