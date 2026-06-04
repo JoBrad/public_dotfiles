@@ -5,8 +5,7 @@
 #+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
-command -v aws >/dev/null 2>&1 || return
-
+command -v aws > /dev/null 2>&1 || return
 
 __awp_getAWSConfigLocation() {
   #######################################
@@ -30,7 +29,6 @@ __awp_getAWSConfigLocation() {
   echo "${_config_dir}/config"
 }
 
-
 _validate_aws_config() {
   #######################################
   # Validate that the discovered AWS configuration file exists and is readable
@@ -46,7 +44,6 @@ _validate_aws_config() {
   fi
 }
 
-
 _aws_profile_complete() {
   #######################################
   # Completer for functions that accept an AWS profile name.
@@ -57,17 +54,16 @@ _aws_profile_complete() {
 
   # Check if cache needs refreshing
   if [[ -f "$config_file" ]]; then
-    current_mtime=$(stat -c %Y "$config_file" 2>/dev/null || stat -f %m "$config_file" 2>/dev/null)
+    current_mtime=$(stat -c %Y "$config_file" 2> /dev/null || stat -f %m "$config_file" 2> /dev/null)
     if [[ "$current_mtime" != "$_AWS_CONFIG_MTIME" ]]; then
       # shellcheck disable=SC2119
-      _AWS_PROFILES_CACHE=$(awslistprofile 2>/dev/null)
+      _AWS_PROFILES_CACHE=$(awslistprofile 2> /dev/null)
       _AWS_CONFIG_MTIME="$current_mtime"
     fi
   fi
 
   mapfile -t COMPREPLY < <(compgen -W "$_AWS_PROFILES_CACHE" -- "$cur")
 }
-
 
 # shellcheck disable=SC2120
 __awp_awsenvclear() {
@@ -91,7 +87,6 @@ __awp_awsenvclear() {
   done
 }
 
-
 # shellcheck disable=SC2120
 awslistprofile() {
   local helpmsg="
@@ -111,7 +106,7 @@ awslistprofile() {
   __awp_validate_aws_config || return 1
 
   local profiles
-  profiles=$(sed -n 's/^\[profile \(.*\)\]$/\1/p; s/^\[\([^]]*\)\]$/\1/p' "$config_file")
+  profiles=$(sed -n 's/^\[profile \(.*\)\]$/\1/p; s/^\[\([^]]*\)\]$/\1/p' "$AWS_CONFIG_FILE")
 
   # If filter provided, apply case-insensitive partial match
   if [[ -n "$1" ]]; then
@@ -120,7 +115,6 @@ awslistprofile() {
     echo "$profiles"
   fi
 }
-
 
 awsgetregion() {
   local helpmsg="
@@ -164,7 +158,6 @@ awsgetregion() {
 
   echo "$region"
 }
-
 
 awssetprofile() {
   local helpmsg="
@@ -210,7 +203,7 @@ awssetprofile() {
   # Get configured profile region
   # Use provided region if given
   if [[ -z "$region" ]]; then
-    profile_region=$(awsgetregion "$AWS_PROFILE" 2>/dev/null)
+    profile_region=$(awsgetregion "$AWS_PROFILE" 2> /dev/null)
     if [[ -n "$profile_region" ]]; then
       region="$profile_region"
     elif [[ -n "$_cur_aws_region" ]]; then
@@ -222,7 +215,7 @@ awssetprofile() {
   export AWS_REGION="$region"
 
   # Check if logged in, login if needed
-  if ! aws sts get-caller-identity >/dev/null 2>&1; then
+  if ! aws sts get-caller-identity > /dev/null 2>&1; then
     echo "Not logged in to AWS, running 'aws sso login'..."
     if ! aws sso login --profile "$AWS_PROFILE"; then
       echo "Error: AWS SSO login failed" >&2
@@ -234,7 +227,6 @@ awssetprofile() {
   echo "AWS_REGION: $AWS_REGION"
 
 }
-
 
 # Cache variables
 _AWS_PROFILES_CACHE=""
@@ -249,4 +241,4 @@ alias awsls="awslistprofile"
 alias awssp="awssetprofile"
 alias awswho="aws sts get-caller-identity"
 
-complete -F __awp_aws_profile_complete awsgetregion awssetprofile awssp awsgetregion awsgr
+complete -F __awp_aws_profile_complete awsgetregion awssetprofile awssp awsgr

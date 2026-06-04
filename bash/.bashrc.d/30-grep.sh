@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+
 #+++++++++++++++++++++++++++++++++++++
 # Grep color output
 #+++++++++++++++++++++++++++++++++++++
+
+# Only load if tool is present
+command -v grep > /dev/null 2>&1 || return
 
 # GREP_COLORS info
 # bn    Byte offset prefixes
@@ -19,6 +23,6 @@
 # Default value is ms=01;31:mc=01;31:sl=:cx=:fn=35:ln=32:bn=32:se=36
 export GREP_COLORS="ms=01;36:mt=01;36:mc=01;36:sl=01;35:cx=01;35:fn=01;32:ln=32:bn=32:se=36"
 
-alias egrep='egrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
-alias fgrep='fgrep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
+alias egrep='grep -E --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
+alias fgrep='grep -F --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox}'
 alias grep='grep --color=auto'

@@ -35,6 +35,7 @@ disable-model-invocation: false
 - Do not output a separate severity-ordered narrative section unless the user asks for it.
 
 ## Minimum Required Checks
+- Apply formatting in-place to the script by running `shfmt -w <file>`, but do not treat formatting issues as review failures.
 - Every review must include an explicit parse/syntax check result for the target shell dialect.
 - Parse check commands by target shell:
 	- bash: `bash -n <file>`

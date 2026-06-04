@@ -82,7 +82,7 @@ __terminate "$?"
 - Prefer explicit, quoted parameter expansion.
 - Keep the opening brace on the same line as the start of a function
 - Closing braces for functions should be on their own line
-- Maintain 2 blank lines before and after a function
+- Maintain a blank line before and after a function
 - Keep the `do` or `then` keyword for `for` or `while` statements on the same line as the start of the control flow.
 
 ```sh

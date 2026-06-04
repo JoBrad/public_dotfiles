@@ -5,8 +5,8 @@
 #+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
-command -v pwsh >/dev/null 2>&1 || return
-command -v brew >/dev/null 2>&1 || return
+command -v pwsh > /dev/null 2>&1 || return
+command -v brew > /dev/null 2>&1 || return
 
 function upgradepwsh() {
   brew upgrade powershell

@@ -1,16 +1,19 @@
 [*]
 end_of_line               = lf
-indent_style              = space
 indent_size               = 2
+indent_style              = space
 insert_final_newline      = true
 trim_trailing_whitespace  = true
 
 [*.{sh,zsh}]
-binary_next_line   = true
-switch_case_indent = true
-space_redirects    = true
-function_next_line = true
-never_split        = true
+binary_next_line    = true
+function_next_line  = false
+keep_padding        = true
+minify              = false
+never_split         = true
+simplify            = false
+space_redirects     = true
+switch_case_indent  = true
 
 [*.sh]
 shell_variant      = bash
