@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 #+++++++++++++++++++++++++++++++++++++
-# Updates to enhance security
+# Update shell settings to enhance security and privacy
 #+++++++++++++++++++++++++++++++++++++
 
 # Don't save command history after logoff

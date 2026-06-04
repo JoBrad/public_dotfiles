@@ -3,9 +3,14 @@
 Thumbs.db
 
 !/.gitignore
+!/.editorconfig
+!/install.sh
+!/.agents/
+!/.agents/**
 !/AGENTS.md
 !/LICENSE
 !/README.md
+!/assets/
 !/bash/
 !/bash/**
 /bash/**/.DS_Store

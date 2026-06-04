@@ -1,14 +1,20 @@
 #!/usr/bin/env zsh
 
 #+++++++++++++++++++++++++++++++++++++
-# Custom AWS aliases with completer
+# AWS Profile Manager script, and custom aliases
 #+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
 command -v aws >/dev/null 2>&1 || return
 
-_getAWSConfigLocation() {
-  # Prefer AWS_CONFIG_FILE
+
+__awp_getAWSConfigLocation() {
+  #######################################
+  # Locate the AWS configuration file, preferring AWS_CONFIG_FILE, then XDG_CONFIG_HOME/aws, then ~/.aws
+  # This function will be unset after it is executed.
+  #######################################
+
+  # Respect existing AWS_CONFIG_FILE variable
   [[ -n "${AWS_CONFIG_FILE}" ]] && echo "${AWS_CONFIG_FILE}" && return
 
   # Then XDG_CONFIG_HOME/aws
@@ -24,7 +30,12 @@ _getAWSConfigLocation() {
   echo "${_config_dir}/config"
 }
 
-_validate_aws_config() {
+
+__awp_validate_aws_config() {
+  #######################################
+  # Validate that the discovered AWS configuration file exists and is readable
+  #######################################
+
   local config_file="${AWS_CONFIG_FILE}"
   if [[ -z "$config_file" ]]; then
     echo "Error: AWS_CONFIG_FILE is not set" >&2
@@ -36,41 +47,64 @@ _validate_aws_config() {
 }
 
 
-# Completer for functions that accept an AWS profile name.
-_aws_profile_complete() {
-  if [[ -z "$_aws_profiles_session_cache" ]]; then
-    _aws_profiles_session_cache=(${(f)"$(awslistprofile 2>/dev/null)"})
+__awp_aws_profile_complete() {
+  #######################################
+  # Completer for functions that accept an AWS profile name.
+  #######################################
+
+  if [[ -z "$__awp_aws_profiles_cache_policy" ]]; then
+    __awp_aws_profiles_cache_policy=(${(f)"$(awslistprofile 2>/dev/null)"})
   fi
-  _describe 'AWS profiles' _aws_profiles_session_cache
+  _describe 'AWS profiles' __awp_aws_profiles_cache_policy
 }
 
 
-_aws_profiles_cache_policy() {
+__awp_aws_profiles_cache_policy() {
   local config_file="${AWS_CONFIG_FILE}"
   [[ -f "$config_file" && "$config_file" -nt "$1" ]]
 }
 
 
-# Completer for functions that accept an AWS profile name
-awsenvclear() {
-  # Handle help flags
+# shellcheck disable=SC2120
+__awp_awsenvclear() {
+  #######################################
+  # Clear AWS CLI environment variables
+  #######################################
+  local varnames=(
+    AWS_PROFILE
+    AWS_REGION
+    AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY
+    AWS_SESSION_TOKEN
+  )
   if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    echo "Usage: awsenvclear"
-    echo "Unsets AWS CLI environment variables: AWS_PROFILE, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN."
+    echo "Usage: __awp_awsenvclear"
+    echo "Unsets AWS CLI environment variables: ${varnames[*]}."
     return 0
   fi
-  unset AWS_PROFILE AWS_REGION AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+  for var in "${varnames[@]}"; do
+    unset "$var"
+  done
 }
 
 
+# shellcheck disable=SC2120
 awslistprofile() {
-  # Handle help flags
+  local helpmsg="
+  Usage: $0 [PROFILE_NAME]
+  Return a list of configured AWS profiles, optionally filtered by PROFILE_NAME.
+
+  Arguments:
+    PROFILE_NAME   The name of the AWS profile
+
+  "
+
   if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    echo "Usage: awslistprofile [<profile-name>]"
-    echo "Returns a list of configured AWS profiles, optionally filtered by profile_name."
+    echo "$helpmsg"
     return 0
   fi
-  _validate_aws_config || return 1
+
+  __awp_validate_aws_config || return 1
   local config_file="${AWS_CONFIG_FILE}"
 
   local profiles
@@ -86,52 +120,74 @@ awslistprofile() {
 
 
 awsgetregion() {
-  # Handle help flags
-  if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    echo "Usage: awsgetregion <profile-name>"
-    echo "Returns the AWS region configured for the specified profile"
+  local helpmsg="
+  Usage: $0 PROFILE_NAME [DEFAULT_REGION]
+  Return the AWS region configured for the specified profile
+
+  Arguments:
+    PROFILE_NAME    The name of the AWS profile
+    DEFAULT_REGION  Optional default region to use if none is configured
+
+  "
+
+  local profile="$1"
+  local default_region="${2:-}"
+
+  if [[ "$profile" == "-h" || "$profile" == "--help" ]]; then
+    echo "${helpmsg}"
     return 0
   fi
 
-  local profile="$1"
   [[ -n "$profile" ]] || {
-    echo "Usage: awsgetregion <profile-name>" >&2
+    echo "Error: Profile name is required"
+    echo "${helpmsg}"
     return 1
   }
 
   if ! awslistprofile | grep -q "^${profile}$"; then
-    echo "Error: Profile '$profile' not found" >&2
+    echo "Error: Profile '$profile' not found"
     return 1
   fi
 
-  _validate_aws_config || return 1
+  __awp_validate_aws_config || return 1
   local config_file="${AWS_CONFIG_FILE}"
 
   local region
   region=$(sed -n "/^\[profile $profile\]$/,/^\[/{ /^region[[:space:]]*=/{ s/^region[[:space:]]*=[[:space:]]*//p; q; } }; /^\[$profile\]$/,/^\[/{ /^region[[:space:]]*=/{ s/^region[[:space:]]*=[[:space:]]*//p; q; } }" "$config_file")
 
   if [[ -z "$region" ]]; then
-    echo "Error: Profile '$profile' has no region configured" >&2
-    return 1
+    region="${default_region}"
   fi
 
   echo "$region"
 }
 
 
-# Set AWS env variables
 awssetprofile() {
+  local helpmsg="
+  Usage: $0 PROFILE_NAME [REGION_NAME]
+  Sets the AWS_PROFILE and AWS_REGION environment variables.
+
+  Arguments:
+    PROFILE_NAME   The name of the AWS profile
+    REGION_NAME    The AWS region. If not provided, will use the profile's configured region, or us-east-1 if AWS_REGION is not set.
+
+  "
+  local profile="$1"
+  local region="${2}"
+  local _cur_aws_region="${AWS_REGION}"
+  local fallback_region="us-east-1"
+  local profile_region
+
   # Handle help flags
   if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-    echo "Usage: awssetprofile <profile-name>"
-    echo "Sets AWS_PROFILE and AWS_REGION environment variables"
+    echo "${helpmsg}"
     return 0
   fi
 
-  local profile="$1"
-  local region
   [[ -n "$profile" ]] || {
-    echo "Usage: awssetprofile <profile-name>" >&2
+    echo "Error: Profile name is required" >&2
+    echo "${helpmsg}"
     return 1
   }
 
@@ -141,42 +197,49 @@ awssetprofile() {
     return 1
   fi
 
+  # Unset env variables before setting to avoid incorrect config
+  # shellcheck disable=SC2119
+  __awp_awsenvclear
+
   # Set profile
   export AWS_PROFILE="$profile"
-  # Unset region variables before setting to avoid incorrect config
-  unset AWS_REGION
 
   # Get configured profile region
-  if region=$(awsgetregion "$profile" 2>/dev/null); then
-    export AWS_REGION="$region"
+  # Use provided region if given
+  if [[ -z "$region" ]]; then
+    profile_region=$(awsgetregion "$AWS_PROFILE" 2>/dev/null)
+    if [[ -n "$profile_region" ]]; then
+      region="$profile_region"
+    elif [[ -n "$_cur_aws_region" ]]; then
+      region="$_cur_aws_region"
+    else
+      region="$fallback_region"
+    fi
   fi
+  export AWS_REGION="$region"
 
   # Check if logged in, login if needed
   if ! aws sts get-caller-identity >/dev/null 2>&1; then
     echo "Not logged in to AWS, running 'aws sso login'..."
-    if ! aws sso login --profile "$profile"; then
+    if ! aws sso login --profile "$AWS_PROFILE"; then
       echo "Error: AWS SSO login failed" >&2
       return 1
     fi
   fi
 
   echo "AWS_PROFILE: $AWS_PROFILE"
-  echo "AWS_REGION: $region"
+  echo "AWS_REGION: $AWS_REGION"
 
 }
 
-export AWS_CONFIG_FILE=$(_getAWSConfigLocation)
-unset -f _getAWSConfigLocation
 
+# shellcheck disable=SC2155
+export AWS_CONFIG_FILE=$(__awp_getAWSConfigLocation)
+unset -f __awp_getAWSConfigLocation
+
+alias awsgr="awsgetregion"
 alias awsls="awslistprofile"
 alias awssp="awssetprofile"
 alias awswho="aws sts get-caller-identity"
 
-compdef _aws_profile_complete awsgetregion awssetprofile awssp
-# Add this to the list of pending completions
-# This doesn't actually get picked up. Need to find out why.
-# _pending_completions+="compdef _aws_profile_complete awsgetregion awssetprofile awssp"$'\n'
-
-#+++++++++++++++++++++++++++++++++++++
-# End Custom AWS Plugin
-#+++++++++++++++++++++++++++++++++++++
+compdef __awp_aws_profile_complete awsgetregion awssetprofile awssp awsgetregion awsgr

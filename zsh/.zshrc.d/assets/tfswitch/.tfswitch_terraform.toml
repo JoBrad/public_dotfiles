@@ -1,4 +1,0 @@
-product = "terraform"
-install = "/opt/tfswitch"
-bin = "/opt/tfswitch/bin/terraform"
-log-level = "INFO"

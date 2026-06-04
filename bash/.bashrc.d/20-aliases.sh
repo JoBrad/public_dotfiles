@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
 
+#+++++++++++++++++++++++++++++++++++++
+# Custom aliases for common commands and tools
+#+++++++++++++++++++++++++++++++++++++
+
+########################
 # cd aliases
+########################
 alias ..='cd ..'
 alias ...='cd .. && cd ..'
 alias ....='cd .. && cd .. && cd ..'
 alias cd..='cd ..'
 
-########################
 # Prefer Gnu Utils
-########################
-# Check for GNU utils once
 _gls_path=$(command -v gls)
 if [[ -n "$_gls_path" ]]; then
   _gnu_prefix="$(dirname "$_gls_path")/g"

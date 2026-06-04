@@ -53,3 +53,7 @@
 - Prefix project functions and variables to prevent collisions with user config or third-party plugins.
 - Require shellcheck and syntax checks (bash -n or zsh -n) for changed shell files before merge.
 - Wrap prompt/UI features so non-interactive shells (CI, scripts, ssh commands) skip unnecessary initialization.
+
+# Other tools
+
+Look in the `.agents/skills` directory for any skills that should be loaded.

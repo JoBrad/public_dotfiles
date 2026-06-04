@@ -1,14 +1,32 @@
 #!/usr/bin/env zsh
-# Zsh completion for azure-profile-manager.sh
-# Source this file in your .zshrc or .bashrc
-#
-# Usage:
-#   source /path/to/azure-profile-manager-completion.sh
-#
-# This script was originally created by Austin Maddox (Thanks!)
+
+#+++++++++++++++++++++++++++++++++++++
+# Azure Profile Manager script, and custom aliases
+#+++++++++++++++++++++++++++++++++++++
+
 
 # Only load if az CLI is present
 command -v az >/dev/null 2>&1 || return
+
+__azure_is_sourced() {
+  if [ -n "${BASH_VERSION-}" ]; then
+    [[ "${BASH_SOURCE[0]}" != "${0}" ]]
+  elif [ -n "${ZSH_VERSION-}" ]; then
+    # shellcheck disable=SC2296
+    (( zsh_eval_context[(I)file] ))
+  else
+    return 1
+  fi
+}
+
+__azure_terminate() {
+  local exit_code="${1:-0}"
+  if __azure_is_sourced; then
+    return "${exit_code}"
+  else
+    exit "${exit_code}"
+  fi
+}
 
 
 # Symlinks azure-profile-manager in ~/.local/bin and add config, if they don't exist
@@ -20,11 +38,11 @@ _install_azp() {
     if [[ ! -f "${source_file}" ]];
     then
         echo "Could not find Azure profile manager at ${source_file}!"
-        exit 1
+        return 1
     fi
     if [[ ! -f "${target_file}" ]];
     then
-        [[ ! -d "${bin_dir}" ]]; mkdir -p "${bin_dir}"
+        [[ ! -d "${bin_dir}" ]] && mkdir -p "${bin_dir}"
         ln -s "${source_file}" "${target_file}"
         chmod +x "${source_file}"
     fi
@@ -92,9 +110,18 @@ _azure_profile_manager() {
     esac
 }
 
-_install_azp
-alias azp="source ~/.local/bin/azure-profile-manager.sh"
 
-# Register completion for azp function/alias
-compdef _azure_profile_manager azp
-compdef _azure_profile_manager azure-profile-manager.sh
+main() {
+  if ! _install_azp; then
+    return 1
+  fi
+
+  alias azp="source ~/.local/bin/azure-profile-manager.sh"
+  # Register completion for azp function/alias
+  compdef _azure_profile_manager azp
+  compdef _azure_profile_manager azure-profile-manager.sh
+  return 0
+}
+
+main "$@"
+__azure_terminate "$?"

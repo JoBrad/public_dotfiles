@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-########################
-# Docker-specific setup
-########################
+#+++++++++++++++++++++++++++++++++++++
+# Docker aliases
+#+++++++++++++++++++++++++++++++++++++
 
 # Only load if tool is present
 command -v docker >/dev/null 2>&1 || return

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-########################
+
+#+++++++++++++++++++++++++++++++++++++
 # OpenTofu config
-########################
+#+++++++++++++++++++++++++++++++++++++
+
 # Only load if tool is present
 command -v tofu >/dev/null 2>&1 || return
 
@@ -16,6 +18,7 @@ export TF_PLUGIN_CACHE_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/tf_plugin_cac
 ########################
 # Terraform prompt configuration
 ########################
+
 tf_prompt_info() {
   # Don't show 'default' workspace in home dir
   [[ "$PWD" != ~ ]] || return
@@ -48,6 +51,7 @@ alias tfi='tf init'
 alias tfip='tfi && tfp'
 alias tfia='tfi && tfa'
 alias tfp='tf plan'
+alias tfpnc='tf plan -no-color -concise'
 alias tfa='tf apply'
 
 alias tffmt='tf fmt'
