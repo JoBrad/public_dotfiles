@@ -45,6 +45,7 @@ fi
 alias l='ls -CF'
 alias la="ls -A"
 command -v tree > /dev/null 2>&1 && alias lsd='tree -daiL 1'
+
 # Adds file classification indicators to entries.
 # List of indicators:
 #   / directory
@@ -58,8 +59,15 @@ alias lw="ls -A"
 alias tarc='tar -cavf'
 alias tarx='tar -xavf'
 
-# Make diff ignore spaces, and show results side by side
-alias diff="diff --ignore-case --ignore-all-space --side-by-side"
+# Make diff ignore spaces, recurse into directories, and render through
+# Use git-delta if present for a better diff
+if command -v delta > /dev/null 2>&1; then
+  diff() {
+    command diff -u -r --ignore-case --ignore-all-space "$@" | delta --side-by-side
+  }
+else
+  alias diff="diff --ignore-case --ignore-all-space --side-by-side"
+fi
 
 # Re-run the last command as sudo
 alias fuck='sudo $(history -p !!)'
