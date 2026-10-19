@@ -224,6 +224,40 @@ awssetprofile() {
 
 }
 
+get_instance_names() {
+  local -a ids
+  if [ "$#" -eq 0 ]; then
+    ids=($(aws ec2 describe-instances --query 'Reservations[*].Instances[*].InstanceId' --output text))
+  else
+    ids=("$@")
+  fi
+
+  if [ "${#ids[@]}" -eq 0 ]; then
+    echo "No instance IDs provided or found."
+    return 1
+  fi
+
+  local ids_csv
+  ids_csv=$(IFS=,; echo "${ids[*]}")
+
+  local ec2_json ssm_json
+  ec2_json=$(aws ec2 describe-instances --instance-ids "${ids[@]}" \
+    --query 'Reservations[*].Instances[*].{InstanceId:InstanceId,Name:Tags[?Key==`Name`].Value|[0]}' \
+    --output json | jq '[.[][]]')
+
+  ssm_json=$(aws ssm describe-instance-information \
+    --filters "Key=InstanceIds,Values=${ids_csv}" \
+    --query 'InstanceInformationList[*].{InstanceId:InstanceId,ComputerName:ComputerName}' \
+    --output json)
+
+  jq -n --argjson ec2 "$ec2_json" --argjson ssm "$ssm_json" '
+    ($ssm | map({(.InstanceId): .ComputerName}) | add) as $names |
+    $ec2 | map({InstanceId, Name, ComputerName: ($names[.InstanceId] // "-")})
+    | (["InstanceId","Name","ComputerName"] | @tsv), (.[] | [.InstanceId, .Name, .ComputerName] | @tsv)
+  ' -r | column -t -s $'\t'
+}
+
+
 # shellcheck disable=SC2155
 export AWS_CONFIG_FILE=$(__awp_getAWSConfigLocation)
 unset -f __awp_getAWSConfigLocation
