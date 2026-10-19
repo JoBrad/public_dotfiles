@@ -42,10 +42,14 @@ RPROMPT='$(tf_prompt_info)'
 # tfswitch config
 ########################
 function set_tfswitch_config {
-  local assets_dir="${${(%):-%x}:A:h}/assets"
+  local my_location="${${(%):-%x}:A:h}"
+  local assets_dir="${CONFIG_ASSETS_DIR}"
+  if [[ -z "${assets_dir}" ]]; then
+    assets_dir="$(dirname "${my_location}")/assets"
+  fi
   local source_file="${assets_dir}/tfswitch/.tfswitch_tofu.toml"
   if [[ "$1" == "terraform" ]]; then
-    source_file="${${(%):-%x}:A:h}/assets/tfswitch/.tfswitch_terraform.toml"
+    source_file="${assets_dir}/tfswitch/.tfswitch_terraform.toml"
   fi
   if [[ -f "${source_file}" ]]; then
     [[ -f ~/.tfswitch.toml ]] && rm ~/.tfswitch.toml
