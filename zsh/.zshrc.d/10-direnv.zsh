@@ -11,9 +11,12 @@ export DIRENV_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/direnv"
 export DIRENV_LIB="${DIRENV_CONFIG}/lib"
 
 __direnv_load_scripts() {
-  local my_location="${0:A:h}"
-  local direnv_asset_dir
-  direnv_asset_dir="$(dirname "${my_location}")/assets/direnv"
+  local my_location="${${(%):-%x}:A:h}"
+  local assets_dir="${CONFIG_ASSETS_DIR}"
+  if [[ -z "${assets_dir}" ]]; then
+    assets_dir="$(dirname "${my_location}")/assets"
+  fi
+  local direnv_asset_dir="${assets_dir}/direnv"
 
   if [[ -d "${direnv_asset_dir}" ]]; then
     for scriptfile in "${direnv_asset_dir}"/*.sh(N); do

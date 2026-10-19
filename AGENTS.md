@@ -57,3 +57,11 @@
 # Other tools
 
 Look in the `.agents/skills` directory for any skills that should be loaded.
+
+# Todo tracking
+
+Check `.agents/todo/TODO.md` for open, in-progress, and done tasks. It's an
+index of one-line pointers to per-task files in that same folder — read the
+linked file for full context before resuming a task. Update both the index
+and the task file as work progresses (status changes, new findings, moving
+finished items to the Done section).
