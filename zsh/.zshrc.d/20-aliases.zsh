@@ -33,6 +33,14 @@ if [[ -n "$_gnu_prefix" ]]; then
   [[ -x "${_gnu_prefix}tee" ]] && alias tee="${_gnu_prefix}tee"
   [[ -x "${_gnu_prefix}cut" ]] && alias cut="${_gnu_prefix}cut"
   [[ -x "${_gnu_prefix}tar" ]] && alias tar="${_gnu_prefix}tar"
+  [[ -x "${_gnu_prefix}date" ]] && alias date="${_gnu_prefix}date"
+  [[ -x "${_gnu_prefix}find" ]] && alias find="${_gnu_prefix}find"
+  [[ -x "${_gnu_prefix}diff" ]] && alias diff="${_gnu_prefix}diff"
+  [[ -x "${_gnu_prefix}sort" ]] && alias sort="${_gnu_prefix}sort"
+  [[ -x "${_gnu_prefix}uniq" ]] && alias uniq="${_gnu_prefix}uniq"
+  [[ -x "${_gnu_prefix}head" ]] && alias head="${_gnu_prefix}head"
+  [[ -x "${_gnu_prefix}tail" ]] && alias tail="${_gnu_prefix}tail"
+  [[ -x "${_gnu_prefix}wc" ]] && alias wc="${_gnu_prefix}wc"
   unset _gnu_prefix
 else
   # Fallbacks for non-GNU systems
