@@ -31,6 +31,7 @@ if [[ -s "${_gitcmd}" ]]; then
   alias gcl="git config --list"
   alias gf="git fetch"
   alias gfa="git fetch --all"
+  alias gfap="git fetch --all --prune"
   alias gll="git status"
   alias gm="git merge"
   alias gp="git pull"
