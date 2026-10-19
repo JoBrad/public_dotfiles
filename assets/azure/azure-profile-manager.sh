@@ -292,9 +292,11 @@ switch_profile() {
         export="az"
     fi
 
-    if [[ -z "$profile_name" ]]; then
-        print_error "Usage: switch_profile <profile_name> <export_option>"
-        return 1
+    if [[ -z "$profile_name" || "$profile_name" == "-h" || "$profile_name" == "--help" ]]; then
+      print_error "Usage: switch_profile <profile_name> <export_option>"
+      print_error "  <profile_name>   Name of the profile to switch to"
+      print_error "  <export_option>  Optional export option: --export-arm or --export-az"
+      return 1
     fi
 
     # Check if profile exists
@@ -337,6 +339,7 @@ switch_profile() {
         echo "  AZURE_SUBSCRIPTION_ID: $AZURE_SUBSCRIPTION_ID"
     fi
 
+    az account set --subscription "$subscription_id" --only-show-errors --output none
     print_debug "Logging in to Azure..."
 
     # Login with auto-dismiss of interactive prompts
