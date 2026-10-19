@@ -294,6 +294,8 @@ switch_profile() {
 
   if [[ -z "$profile_name" || "$profile_name" == "-h" || "$profile_name" == "--help" ]]; then
     print_error "Usage: switch_profile <profile_name> <export_option>"
+    print_error "  <profile_name>   Name of the profile to switch to"
+    print_error "  <export_option>  Optional export option: --export-arm or --export-az"
     return 1
   fi
 
@@ -337,7 +339,8 @@ switch_profile() {
     echo "  AZURE_SUBSCRIPTION_ID: $AZURE_SUBSCRIPTION_ID"
   fi
 
-  print_debug "Logging in to Azure..."
+    az account set --subscription "$subscription_id" --only-show-errors --output none
+    print_debug "Logging in to Azure..."
 
   # Login with auto-dismiss of interactive prompts
   if ! printf "\n" | az login --tenant "$tenant_id" --allow-no-subscriptions > /dev/null 2>&1; then
