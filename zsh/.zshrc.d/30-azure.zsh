@@ -30,7 +30,11 @@ __azure_terminate() {
 # Symlinks azure-profile-manager in ~/.local/bin and add config, if they don't exist
 _install_azp() {
   local bin_dir="${HOME}/.local/bin"
-  local assets_dir="${${(%):-%x}:A:h}/assets"
+  local my_location="${${(%):-%x}:A:h}"
+  local assets_dir="${CONFIG_ASSETS_DIR}"
+  if [[ -z "${assets_dir}" ]]; then
+    assets_dir="$(dirname "${my_location}")/assets"
+  fi
   local source_file="${assets_dir}/azure/azure-profile-manager.sh"
   local target_file="${bin_dir}/azure-profile-manager.sh"
   if [[ ! -f "${source_file}" ]]; then
@@ -42,21 +46,11 @@ _install_azp() {
     ln -s "${source_file}" "${target_file}"
     chmod +x "${source_file}"
   fi
-  _mk_az_profiles_dir
 }
 
 # Returns the configuration path for Azure profile manager configuration
 _get_az_profiles_dir() {
   echo "${XDG_CONFIG_HOME:-$HOME/.config}/.azure-profiles"
-}
-
-# Creates the configuration path and file for Azure profile manager, if it does not exist.
-_mk_az_profiles_dir() {
-  local profile_dir=$(_get_az_profiles_dir)
-  if [[ ! -d "${profile_dir}" ]]; then
-    mkdir -p "${profile_dir}"
-    echo '{}' > "${profile_dir}/profiles.json"
-  fi
 }
 
 # Completion function for azure-profile-manager
@@ -105,17 +99,12 @@ _azure_profile_manager() {
   esac
 }
 
-main() {
-  if ! _install_azp; then
-    return 1
-  fi
-
-  alias azp="source ~/.local/bin/azure-profile-manager.sh"
-  # Register completion for azp function/alias
-  compdef _azure_profile_manager azp
-  compdef _azure_profile_manager azure-profile-manager.sh
+if ! _install_azp; then
   return 0
-}
+fi
 
-main "$@"
-__azure_terminate "$?"
+alias azp="~/.local/bin/azure-profile-manager.sh"
+# Register completion for azp function/alias
+compdef _azure_profile_manager azp
+compdef _azure_profile_manager azure-profile-manager.sh
+return 0
